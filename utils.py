@@ -25,7 +25,7 @@ def is_chinese(text):
 def get_basic_index_dict():
 	e_c = dict() #stands for english name to chinese name
 	c_e = dict() #stands for chinese name to english name
-	with open(basic_path["english_chinese_index_path"]) as f:
+	with open(basic_path["english_chinese_index_path"], encoding="utf-8") as f:
 		lines = f.readlines()
 		for line in lines:
 			parts = line.strip("\n").split("\t")
@@ -35,7 +35,7 @@ def get_basic_index_dict():
 	
 	n_i = dict() #chinese name to id
 	i_n = dict() #id to chinese name
-	with open(basic_path["chinese_id_index_path"]) as f:
+	with open(basic_path["chinese_id_index_path"], encoding="utf-8") as f:
 		lines = f.readlines()
 		for line in lines:
 			parts = line.strip("\n").split(":")
@@ -45,7 +45,7 @@ def get_basic_index_dict():
 	
 	f_c = dict() #relation dict for father to child
 	c_f = dict() # relation dict for child to father
-	with open(basic_path["relation_index_path"]) as f:
+	with open(basic_path["relation_index_path"], encoding="utf-8") as f:
 		lines = f.readlines()
 		for line in lines:
 			parts = line.strip("\n").split(":")
