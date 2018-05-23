@@ -184,7 +184,8 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 	tmp_size = []
 	for i in range(len(ids)):
 		if (candidates_subclass[i] == True) and (candidates_subclass_mode[i] == "1"):
-			delete_pos.append(i)
+			if len(get_leaves([ids[i]])[0]) != 0:#如果本来就是叶子节点，就不删除
+				delete_pos.append(i)
 			leaves_id.append(ids[i])
 			tmp_prob.append(candidates_prob[i])
 			tmp_size.append(candidates_size[i])
@@ -195,11 +196,27 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 		candidates_subclass = candidates_subclass + [False]*len(leaves[i])
 		candidates_size = candidates_size + [tmp_size[i]]*len(leaves[i])
 
+	removed_ids = []
+	removed_prob = []
+	removed_subclass = []
+	removed_size = []
+	for i in range(len(ids)):
+		if i not in delete_pos:
+			removed_ids.append(ids[i])
+			removed_prob.append(candidates_prob[i])
+			removed_subclass.append(candidates_subclass[i])
+			removed_size.append(candidates_size[i])
+	ids = removed_ids
+	candidates_prob = removed_prob
+	candidates_subclass = removed_subclass
+	candidates_size = removed_size
+	'''
 	for pos in delete_pos:
 		del ids[pos]
 		del candidates_prob[pos]
 		del candidates_subclass[pos]
 		del candidates_size[pos]
+	'''
 
 	return ids,candidates_prob,candidates_subclass,candidates_size
 

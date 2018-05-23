@@ -10,8 +10,14 @@
             "request": "launch",
             "program": "${file}",
             "args":[
-                "--file",
-                "./config.ini"
+                "--re",
+                "日常生活,,,,著名景点",
+                "--re-subclass",
+                "1",
+                "--re-subclass-mode",
+                "0",
+                "--re-prob",
+                "0.9"
             ]
         },
         

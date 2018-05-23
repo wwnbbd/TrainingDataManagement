@@ -114,13 +114,40 @@ if config["mode"] == "filter":
 
 
 	if config["re"] != "None":#using regex to specify ids
-		re_ids = get_ids_using_re(config["re"])
-		re_ids, re_prob, re_subclass, re_size = parse_argument_section(re_ids, config["re-prob"], config["re-subclass"], config["re-size"],config["chinese-subclass-mode"])
-		#merge
-		candidates_ids = candidates_ids + re_ids
-		candidates_prob = candidates_prob + re_prob
-		candidates_subclass = candidates_subclass + re_subclass
-		candidates_size = candidates_size + re_size
+		regexes = config["re"].strip().split(",,,,")
+		regex_ids = list(map(get_ids_using_re,regexes))#list, item:list
+		regex_prob = config["re-prob"].strip().split(",")
+		if len(regex_prob) == 1:
+			regex_prob = regex_prob * len(regex_ids)
+		if len(regex_prob) != len(regex_ids):
+			raise Exception("the number of regex probability should match that of regex ids")
+
+		regex_subclass = config["re-subclass"].strip().split(",")
+		if len(regex_subclass) == 1:
+			regex_subclass = regex_subclass * len(regex_ids)
+		if len(regex_subclass) != len(regex_ids):
+			raise Exception("the number of regex subclass should match that of regex ids")
+
+		regex_size = config["re-size"].strip().split(",")
+		if len(regex_size) == 1:
+			regex_size = regex_size * len(regex_ids)
+		if len(regex_size) != len(regex_ids):
+			raise Exception("the number of regex size should match that of regex ids")
+
+		regex_subclass_mode = config["re-subclass-mode"].strip().split(",")
+		if len(regex_subclass_mode) == 1:
+			regex_subclass_mode = regex_subclass_mode * len(regex_ids)
+		if len(regex_subclass_mode) != len(regex_ids):
+			raise Exception("the number of subclass mode should match the number of regexes")
+		
+		for i in range(len(regex_ids)):
+			#re_ids = get_ids_using_re(config["re"])
+			re_ids, re_prob, re_subclass, re_size = parse_argument_section(regex_ids[i], regex_prob[i], regex_subclass[i], regex_size[i],regex_subclass_mode[i])
+			#merge
+			candidates_ids = candidates_ids + re_ids
+			candidates_prob = candidates_prob + re_prob
+			candidates_subclass = candidates_subclass + re_subclass
+			candidates_size = candidates_size + re_size
 
 	#subtract
 	subtract_list = []
