@@ -73,7 +73,7 @@ config = {
 #TODO Deal with config file#######################################################
 if args.file != "None":
 	mconfig = configparser.ConfigParser()
-	mconfig.read(args.file)
+	mconfig.read(args.file, encoding="utf-8")
 	for mode in ["filter", "add","delete"]:
 		if mode in mconfig.sections():
 			config["mode"] = mconfig.sections()[0]

@@ -186,26 +186,3 @@ def delete_node(node_id):
 				f.write(k+":"+child+"\n")
 
 
-
-'''
-a = manager()
-a.load()
-a.add_filter_condition(["1","2",'3','4','5','11099'],[0.9,1.0,1.0,1.0,1.0,1.0],[True]*6)
-a.delete_condition(["0",'5','10000'])
-a.delete_all_condition()
-a.add_filter_condition_using_re(".*梗")
-print(a.ids)
-print(a.get_filtered_candidates())
-'''
-'''
-#add_node("斑点狗","11000","32")
-_,_,n_i,i_n,f_c,c_f = get_basic_index_dict()
-print(f_c["2"])
-print(f_c["21"])
-delete_node("200000000000")
-_,_,n_i,i_n,f_c,c_f = get_basic_index_dict()
-print(f_c["0"])
-print(f_c["21"])
-print(len(f_c))
-print(len(c_f))
-'''

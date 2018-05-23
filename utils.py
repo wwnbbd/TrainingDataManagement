@@ -223,11 +223,3 @@ def parse_subtract(ids, ids_subclass):
 		final = final + result
 	return final + ids
 	
-#print(parse_subtract(["21","13"],"1"))
-#a,b,c,d = parse_argument_section(["1","2"],"0.9,0.8","1,1","ALL","0,1")
-#print(a)
-#print(b)
-#print(c)
-#print(d)
-#print(get_all_subclasses(["1","2"]))
-#print(get_leaves(["1","2"]))
