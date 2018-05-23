@@ -88,6 +88,7 @@ if config["mode"] == "filter":
 	candidates_prob = []
 	candidates_subclass = []
 	candidates_size = []
+	candidates_origin = []
 	
 	#parse input arguments
 	if config["id"] == "None" and config["chinese"] == "None" and config["file"] == "None" and config["re"] =="None":
@@ -95,22 +96,24 @@ if config["mode"] == "filter":
 	#if ids are given, using ids
 	if config["id"] != "None":
 		id_ids = config["id"].strip().split(",")
-		id_ids, id_prob, id_subclass, id_size = parse_argument_section(id_ids, config["id-prob"], config["id-subclass"], config["id-size"], config["id-subclass-mode"])
+		id_ids, id_prob, id_subclass, id_size, id_origin = parse_argument_section(id_ids, config["id-prob"], config["id-subclass"], config["id-size"], config["id-subclass-mode"], config["id"].strip().split(","))
 		#merge
 		candidates_ids = candidates_ids + id_ids
 		candidates_prob = candidates_prob + id_prob
 		candidates_subclass = candidates_subclass + id_subclass
-		candidates_size = candidates_size + id_size
+		candidates_size = candidates_size + id_size		
+		candidates_origin = candidates_origin + id_origin
 	
 	if config["chinese"] != "None":
 		candidates_chinese = config["chinese"].strip().split(",")
 		chinese_ids = list(map(convert_to_id,candidates_chinese))
-		chinese_ids, chinese_prob, chinese_subclass, chinese_size = parse_argument_section(chinese_ids, config["chinese-prob"], config["chinese-subclass"], config["chinese-size"], config["chinese-subclass-mode"])
+		chinese_ids, chinese_prob, chinese_subclass, chinese_size, chinese_origin = parse_argument_section(chinese_ids, config["chinese-prob"], config["chinese-subclass"], config["chinese-size"], config["chinese-subclass-mode"], config["chinese"].strip().split(","))
 		#merge
 		candidates_ids = candidates_ids + chinese_ids
 		candidates_prob = candidates_prob + chinese_prob
 		candidates_subclass = candidates_subclass + chinese_subclass
 		candidates_size = candidates_size + chinese_size
+		candidates_origin = candidates_origin + chinese_origin
 
 
 	if config["re"] != "None":#using regex to specify ids
@@ -142,12 +145,13 @@ if config["mode"] == "filter":
 		
 		for i in range(len(regex_ids)):
 			#re_ids = get_ids_using_re(config["re"])
-			re_ids, re_prob, re_subclass, re_size = parse_argument_section(regex_ids[i], regex_prob[i], regex_subclass[i], regex_size[i],regex_subclass_mode[i])
+			re_ids, re_prob, re_subclass, re_size, re_origin = parse_argument_section(regex_ids[i], regex_prob[i], regex_subclass[i], regex_size[i],regex_subclass_mode[i], [regexes[i]]*len(regex_ids[i]))
 			#merge
 			candidates_ids = candidates_ids + re_ids
 			candidates_prob = candidates_prob + re_prob
 			candidates_subclass = candidates_subclass + re_subclass
 			candidates_size = candidates_size + re_size
+			candidates_origin = candidates_origin + re_origin
 
 	#subtract
 	subtract_list = []
@@ -171,16 +175,19 @@ if config["mode"] == "filter":
 	removed_prob = []
 	removed_subclass = []
 	removed_size = []
+	removed_origin = []
 	for i in range(len(candidates_ids)):
 		if i not in pos:
 			removed_ids.append(candidates_ids[i])
 			removed_prob.append(candidates_prob[i])
 			removed_subclass.append(candidates_subclass[i])
 			removed_size.append(candidates_size[i])
+			removed_origin.append(candidates_origin[i])
 	candidates_ids = removed_ids
 	candidates_prob = removed_prob
 	candidates_subclass = removed_subclass
 	candidates_size = removed_size
+	candidates_origin = removed_origin
 
 	#main process
 	a = manager()
@@ -234,6 +241,7 @@ if config["mode"] == "filter":
 	#print final result
 	for i in range(len(final)):
 		print("===========================")
+		print(candidates_origin[i])
 		print(final[i])
 
 

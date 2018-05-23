@@ -138,7 +138,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 		else:
  			shutil.copy2(s, d)
 
-def parse_argument_section(ids, prob, subclass, size, subclass_mode):
+def parse_argument_section(ids, prob, subclass, size, subclass_mode, origin):
 	assert type(ids) == list
 	if type(prob) != str:
 		raise Exception("prob should be string")
@@ -148,6 +148,10 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 		raise Exception("size should be string")
 	if type(subclass_mode) != str:
 		raise Exception("subclass mode should be string")
+	if type(origin) != list:
+		raise Exception("origin should be list")
+	if len(ids) != len(origin):
+		raise Exception("the length of origin and ids should be the same.")
 
 	candidates_prob = prob.strip().split(",")
 	if len(candidates_prob) == 1:
@@ -178,10 +182,14 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 		candidates_subclass_mode = candidates_subclass_mode * len(ids)
 	if len(candidates_subclass_mode) != len(ids):
 		raise Exception("the number of mode size should match the number of id ")
+	
+	candidates_origin = origin
+	
 	leaves_id = []
 	delete_pos = []
 	tmp_prob = []
 	tmp_size = []
+	tmp_origin = []
 	for i in range(len(ids)):
 		if (candidates_subclass[i] == True) and (candidates_subclass_mode[i] == "1"):
 			if len(get_leaves([ids[i]])[0]) != 0:#如果本来就是叶子节点，就不删除
@@ -189,27 +197,32 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 			leaves_id.append(ids[i])
 			tmp_prob.append(candidates_prob[i])
 			tmp_size.append(candidates_size[i])
+			tmp_origin.append(candidates_origin[i])
 	leaves = get_leaves(leaves_id)#list, item list
 	for i in range(len(leaves)):
 		ids = ids + leaves[i]
 		candidates_prob = candidates_prob + [tmp_prob[i]]*len(leaves[i])
 		candidates_subclass = candidates_subclass + [False]*len(leaves[i])
 		candidates_size = candidates_size + [tmp_size[i]]*len(leaves[i])
+		candidates_origin = candidates_origin + [tmp_origin[i]]*len(leaves[i])
 
 	removed_ids = []
 	removed_prob = []
 	removed_subclass = []
 	removed_size = []
+	removed_origin = []
 	for i in range(len(ids)):
 		if i not in delete_pos:
 			removed_ids.append(ids[i])
 			removed_prob.append(candidates_prob[i])
 			removed_subclass.append(candidates_subclass[i])
 			removed_size.append(candidates_size[i])
+			removed_origin.append(candidates_origin[i])
 	ids = removed_ids
 	candidates_prob = removed_prob
 	candidates_subclass = removed_subclass
 	candidates_size = removed_size
+	candidates_origin = removed_origin
 	'''
 	for pos in delete_pos:
 		del ids[pos]
@@ -218,7 +231,7 @@ def parse_argument_section(ids, prob, subclass, size, subclass_mode):
 		del candidates_size[pos]
 	'''
 
-	return ids,candidates_prob,candidates_subclass,candidates_size
+	return ids,candidates_prob,candidates_subclass,candidates_size, candidates_origin
 
 def parse_subtract(ids, ids_subclass):
 	if type(ids) != list:
