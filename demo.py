@@ -69,6 +69,11 @@ config = {
 	"father":args.father
 }
 
+candidates_ids = []
+candidates_prob = []
+candidates_subclass = []
+candidates_size = []
+candidates_origin = []
 
 #TODO Deal with config file#######################################################
 if args.file != "None":
@@ -80,15 +85,33 @@ if args.file != "None":
 			break
 	for key in mconfig[config["mode"]]:
 		config[key] = mconfig[config["mode"]][key]
+
+	if "lines" in  mconfig.sections():
+		for key in mconfig["lines"]:
+			parts = mconfig["lines"][key].strip().split(",")
+			if len(parts) == 1:
+				if parts[0] == "-":
+					parts = [1.0, False, "ALL"]
+				else:
+					parts += [False, "ALL"]
+			if len(parts) == 2:
+				parts += ["ALL"]
+			if parts[1] == "0":
+				parts[1] = False
+			if parts[1] == "1":
+				parts[1] = True
+			if parts[2] != "ALL":
+				parts[2] = int(parts[2])
+			candidates_ids.append(key)
+			candidates_prob.append(float(parts[0]))
+			candidates_subclass.append(parts[1])
+			candidates_size.append(parts[2])
+			candidates_origin.append(key)
+
 ###################################################################################
 
 
 if config["mode"] == "filter":
-	candidates_ids = []
-	candidates_prob = []
-	candidates_subclass = []
-	candidates_size = []
-	candidates_origin = []
 	
 	#parse input arguments
 	if config["id"] == "None" and config["chinese"] == "None" and config["file"] == "None" and config["re"] =="None":
