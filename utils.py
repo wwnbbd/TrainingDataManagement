@@ -5,6 +5,7 @@ import shutil
 import os
 import numpy as np
 import pandas as pd
+import multiprocessing as mp
 def is_number(s):
     try:
         float(s)
@@ -254,8 +255,8 @@ def parse_subtract(ids, ids_subclass):
 	for result in results:
 		final = final + result
 	return final + ids
-	
-def parse_annotation_file(file_path):
+
+def parse_single_annotation_file(file_path):
 	record = []
 	with open(file_path) as f:
 		lines = f.readlines()
@@ -269,4 +270,34 @@ def parse_annotation_file(file_path):
 
 		frame = pd.DataFrame(record)
 		return frame
+'''
+def parse_annotation_file(file_paths):	
+	num_samples = len(file_paths)
+	num_cpu = mp.cpu_count()
+	epoch = int(num_samples/num_cpu)
+	final_result = []
+	for i in range(epoch):
+		print(i)
+		results = []
+		pool = mp.Pool()
+		for j in range(num_cpu):
+			result = pool.apply_async(_parse_single_annotation_file,args=(file_paths[i*num_cpu+j],))
+			results.append(result)
+		pool.close()
+		pool.join()
+
+		for result in results:
+			final_result.append(result.get())
 	
+	result = []
+	pool = mp.Pool()
+	for i in range(epoch*num_cpu, num_samples):
+		result = pool.apply_async(_parse_single_annotation_file,args=(file_paths[i],))
+		results.append(result)
+	pool.close()
+	pool.join()
+
+	for result in results:
+		final_result.append(result.get())
+	return final_result
+'''
