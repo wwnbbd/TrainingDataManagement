@@ -3,6 +3,8 @@ import queue
 import re
 import shutil
 import os
+import numpy as np
+import pandas as pd
 def is_number(s):
     try:
         float(s)
@@ -252,4 +254,19 @@ def parse_subtract(ids, ids_subclass):
 	for result in results:
 		final = final + result
 	return final + ids
+	
+def parse_annotation_file(file_path):
+	record = []
+	with open(file_path) as f:
+		lines = f.readlines()
+		for line in lines:
+			if line != "":
+				parts = line.split(' ')
+				probs = parts[-1].split(',')
+				for prob in probs:
+					tmp = prob.split(':')
+					record.append({"file_name":parts[0],"folder":parts[1], 'class_id':np.int32(tmp[0]),'prob':np.float32(tmp[1])})
+
+		frame = pd.DataFrame(record)
+		return frame
 	
