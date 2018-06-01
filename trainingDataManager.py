@@ -17,28 +17,27 @@ class manager():
 		self.subclass_flags = []
 
 	def load(self):
-		#performance:1.17-1.48*e-5/s per record
 		print("Start Loading Human Annotation Files...\n")
 		indexing_files = os.listdir(basic_path["indexing_file_path"])
-		
+		human_start = time.time()
 		for item in indexing_files:
 			item_path = os.path.join(basic_path["indexing_file_path"],item)
 			#annotation_frame = pd.read_csv(item_path,sep="\t",header=None,names=["file_path","class_id","prob"],dtype={"class_id":np.int32,"prob":np.float32})
 			annotation_frame = parse_single_annotation_file(item_path)
 			self.dataframes_human.append(annotation_frame)
-		
-		print("Loading Human Annotation Files Done!\n")
+		human_end = time.time()
+		print("Loading Human Annotation Files Done!  Using {} seconds\n".format(human_end-human_start))
 
 		print("Start Loading Machine Annotation Files...\n")
 		indexing_files = os.listdir(basic_path["indexing_file_machine_path"])
-		
+		machine_start = time.time()
 		for item in indexing_files:
 			item_path = os.path.join(basic_path["indexing_file_machine_path"], item)
 			#annotation_frame = pd.read_csv(item_path, sep="\t",header=None,names=["file_path","class_id","prob"],dtype={"class_id":np.int32,"prob":np.float32})
 			annotation_frame = parse_single_annotation_file(item_path)
 			self.dataframes_machine.append(annotation_frame)
-	
-		print("Loading Machine Annotation Files Done!\n")
+		machine_end = time.time()
+		print("Loading Machine Annotation Files Done! Using {} seconds\n".format(machine_end-machine_start))
 
 	def load_with_keywords(self, keywords):
 		pass
