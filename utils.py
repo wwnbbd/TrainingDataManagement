@@ -270,6 +270,42 @@ def parse_single_annotation_file(file_path):
 
 		frame = pd.DataFrame(record)
 		return frame
+
+def replace_a_to_b_in_c(a, b, c):
+	newlines = []
+	with open(c, encoding='utf-8') as f:
+		lines = f.readlines()
+		for line in lines:
+			parts = line.strip().split(' ')
+			pairs = parts[-1].split(',')
+			new_annotation = ''
+			for pair in pairs:
+				tmp = pair.split(':')
+				first = tmp[0]
+				second = tmp[1]
+				if first == a:
+					first = b
+				new_annotation += first + ':' + second + ','
+			new_annotation = new_annotation[0:-1]#delete the last ','
+			newlines.append(parts[0] + " " + parts[1] + " " + new_annotation + '\n')
+		
+	with open(c, 'w', encoding='utf-8') as f:
+		f.writelines(newlines)
+
+
+
+def replace_a_to_b(a,b):
+	if not is_number(a) or not is_number(b):
+		raise Exception("both a and b should be number!")
+	a, b = str(a), str(b)
+	human_files = []#os.listdir(basic_path['indexing_file_path'])
+	machine_files = os.listdir(basic_path['indexing_file_machine_path'])
+	for item in human_files:
+		replace_a_to_b_in_c(a, b, basic_path['indexing_file_path']+item)
+	for item in machine_files:
+		replace_a_to_b_in_c(a, b, basic_path['indexing_file_machine_path']+item)
+
+#replace_a_to_b('wangwanneng','10000')	
 '''
 def parse_annotation_file(file_paths):	
 	num_samples = len(file_paths)
